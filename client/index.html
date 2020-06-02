@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <link rel="icon" type="image/png" src="assets/eight.PNG">
+<style>body,html{margin:0 0 0 0;padding:0 0 0 0;height:100vh;width:100vw;background-color:#0fa4df}.btttn3dd{font-size:small;text-align:center;padding:5px 5px;border:none;border-radius:8px;text-decoration:none;display:inline-block;margin-bottom:9px;background-color:#f5f6fa;color:#2C3A47;box-shadow:0 9px 0 #e4e7f2,0 9px 25px rgba(0,0,0,.7)}.btttn3dd:active{position:relative;top:6px;box-shadow:0 3px 0 #e4e7f2,0 3px 6px rgba(0,0,0,.7)}.btttn3dd_subhajit{background-color:#5507bb;color:#fff;box-shadow:0 9px 0 #8d6fb4,0 9px 25px rgba(0,0,0,.7)}.btttn3dd_subhajit:active{position:relative;top:6px;box-shadow:0 3px 0 #20638f,0 3px 6px rgba(0,0,0,.7)}#mainpart{margin:0;height:100vh;width:100vw;position:relative;min-height:100%;margin-bottom:-6vh}#menupart{margin:0;position:relative;height:40vh;width:100vw;background-color:#7c4ee7;margin-bottom:-10vh}#footerdiv{position:sticky;margin-top:5vh;height:10vw;width:100vw;background-color:#000;text-align:center;color:gray}#p1g2,#p1g1,#p1g3,#p1g4{position:absolute;width:20px;height:20px;border-radius:50%;background-color:red;border:1px solid #000;color:red;z-index:3}#p2g1,#p2g2,#p2g3,#p2g4{position:absolute;width:20px;height:20px;border-radius:50%;background-color:yellow;border:1px solid #000;z-index:3}#p3g1,#p3g2,#p3g3,#p3g4{position:absolute;width:20px;height:20px;border-radius:50%;background-color:blue;border:1px solid #000;color:blue;z-index:3}#p4g1,#p4g2,#p4g3,#p4g4{position:absolute;width:20px;height:20px;border-radius:50%;background-color:green;border:1px solid #000;z-index:3}#dice0,#dice1,#dice2,#dice3,#animedice0,#animedice1,#animedice2,#animedice3{position:absolute;width:40px;height:40px;border:2px solid #000;border-radius:35%;background-color:#000;transform-style:preserve-3d}#playbutton{display:inline-block;margin-top:5px;margin-left:10vw;margin-bottom:5px;width:80%;padding:15px 25px;font-size:3vh;cursor:pointer;text-align:center;text-decoration:none;outline:none;color:#fff;background-color:red;border:none;border-radius:15px;box-shadow:0 8px #999}playbutton:hover{background-color:#8e7b3e}playbutton:active{background-color:#4090b6;box-shadow:0 5px #666;transform:translateY(4px)}#slidebar{position:fixed;top:0;width:150px;height:auto;background:#151719;left:-200px;transition:all 500ms linear;z-index:10}#slidebar.active{left:0;top:0;opacity:.95;z-index:10}#slidebar a{color:gold;font-size:17pem;margin-top:3px;text-decoration:none}#slidebar ul li{color:rgba(230,230,230,.9);list-style:none;padding:5px 5px;border-bottom:1px solid rgba(100,100,100,.3)}#slidebar .toggle-btn{position:absolute;left:230px;top:10px}#slidebar .toggle-btn span{display:block;width:30px;height:5px;background:#151729;margin:2px 0}#helpbutton{position:relative;margin:0 0 0 0;padding:0 0 0 0;width:auto;height:5vh;left:70vw;top:3px;display:inline-block}#chatbutton{position:relative;margin:0 0 0 0;padding:0 0 0 0;width:auto;height:5vh;left:70vw;top:3px;display:inline-block}#tutorial{position:relative;margin:0 0 0 0;padding:0 0 0 0;width:35vw;height:5vh;left:20vw;top:3px;display:inline-block}.image-resize{display:block;width:100%;padding-top:0%;object-fit:contain;object-position:center center}.modal-bg{position:absolute;top:0;left:5px;display:none;text-align:center;justify-content:center;align-items:center;visibility:hidden;overflow-y:scroll;z-index:10;height:100%}.bg-active{visibility:visible;height:auto;opacity:1}.modal{top:0;left:0;background-color:#a39a16;display:inline-block;justify-content:center;align-items:center;width:90%;overflow-y:scroll}.contentrule{overflow:hidden;overflow-y:scroll}#closebutton{position:fixed;width:10vw;border-radius:20%;background-color:rgb(65,4,4);color:#fff}#pgrbarcont{background-color:#fff;height:10px;padding:1px;width:100%;border:1px solid orangered}#prgcolor{height:10px;width:0%;background-color:orangered}@media only screen and (max-width:560px){body{overflow:visible;height:auto}}
+</style><title>Game Page</title></head>
+<body>
+    <div id="slidebar">
+        <div class="toggle-btn" onclick="toggleslidebar();">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul>
+            <li><a onclick="window.open('https://linkedin.com/in/subhajitmahata');"> Endorse developer on Linkedin </a></li>
+            <li><a onclick="window.open('https://facebook.com/subhajitkp007');">Facebook</a></li>
+            <li><a onclick="window.open('https://api.whatsapp.com/send?phone=919732273358&text=*Hi%20Subhajit*%20I%20have%20played%20your%20game.&#128578;%20*My%20feedback*%20&source=&data=#'); ">WhatsApp Feedback</a></li>
+            <li><a onclick="window.open('mailto://subhajitmahata06@gmail.com');">Mail Bug</a></li>
+            <li><a onclick="window.open('http://subhajitmahatakp.epizy.com/cogame');">Practice Game</a></li>
+        </ul>
+    </div>
+    <div id="helpbutton">
+        <div class="btn-container">
+            <a class="btttn3dd btttn3dd_subhajit">HELP</a>
+        </div>
+    </div>
+    <div id="chatbutton">
+        <div class="btn-container">
+            <a href="javascript:chat()" class="btttn3dd btttn3dd_subhajit" id="chattext">JOIN</a>
+        </div>
+    </div>
+    <div id="tutorial">
+        <div class="btn-container">
+            <a href="javascript:tutorial()" class="btttn3dd btttn3dd_subhajit">Tutorial Mode</a>
+        </div>
+    </div>
+
+    <div class="modal-bg">
+        <div class="modal">
+            <div>
+                <button id="closebutton">&times;</button>
+            </div>
+            <div class="contentrule">
+                <br>
+                <br>
+                <br>
+                <a href="#bengali">বাংলায় পড়ার জন্য এখানে ক্লিক করুন</a>
+                <h3 id="english">Rules</h3>
+                <h3>Introduction </h3>
+                <a href="#howtoplayeng">click here to skip the Introduction</a>
+                <p> 
+                    For playing this game we need two tamarind seed each seed divided two part and a chalk piece to draw the playing board.
+                    In summer season I have spent a lots of time by playing this game in my childhood.If you you know the game rules.Close the help tab and enjoy the game.
+                    If you don't know about it.Don't worry. I am here to help you.
+                    <br>Game rules are same as ludo.</p>
+                <h3 style="text-align: left;"> Let's check how to reach destination</h3>
+                Red player path shown bellow .All other players path follows the same pattern,outer circle
+                anti-clockwise and inner one clockwise.
+                <div class="image-resize"><img src="assets/playerpath.png" alt="path"></div>
+                <h3 style="text-align: left;"> Dice throw results</h3>
+                <p style="text-align: left;">
+                    In ludo dice six faces are available and each side denoted by a value from 1 to 6.
+                    So it is easy to find what is your dice throw result. But here in chokosta we have four 
+                    tamarind seed halves. Here finding the score is little bit tricky one.If throw them
+                    then each halves upper face can be white or black. Here is the rules <br>
+                    1 white and rest halves upper face are balck means 1 score on your current move.<br>
+                    2 white,2 black side means 2.<br>
+                    3 white,one black denotes 3.<br>
+                    4 white results 4 <br>
+                    All four upper faces are black means your score is 8 <br>
+                    Example of 1,2,3,4,8 are follows:
+                    </br>
+                </p>
+                <div class="image-resize"><img src="assets/one.PNG" alt="path"></div>
+                <div class="image-resize"><img src="assets/two.PNG" alt="path"></div>
+                <div class="image-resize"><img src="assets/three.PNG" alt="path"></div>
+                <div class="image-resize"><img src="assets/four.PNG" alt="path"></div>
+                <div class="image-resize"><img src="assets/eight.PNG" alt="path"></div>
+                <h3 style="text-align: left;"> Rules</h3>
+                <p style="text-align: left;">
+                    1. Red player take first turn.Then all
+                    Player take turns in a anti-clockwise order.<br>
+                    2. Each throw, the player decides which piece to move. A piece simply moves in a given path
+                    direction around the track given by the number thrown. If no piece can legally move according to
+                    the number thrown, play passes to the next player.
+                    <br> 3.A throw of 8,4 or killing opponent piece gives another turn.
+                    <br> 4. If your piece lands on a piece of a different colour
+                    and that piece is not in safe box, the piece jumped upon is returned to its starting box.
+                    All crossedbox are safe box.
+                    <br> 5.The first person to move all 4 pieces into the middle square wins.
+                    <br>
+                    <br>
+                    <h3 id="howtoplayeng">Ok.I have got all the rules now tell how can I play this game with myfriends online?</h3>
+                    It's easy. Click on Create Game then enter your name if you want to change your default name player# 
+                    Hurrah!! you have created a new game. Now share that link with whom you want play this game.
+                    Ask them to click the link or told them to click the JOIN button. 
+                    During join they have to enter your shared game code to play with you.
+                    For each move you and your opponent will get 1 minuts.
+                    Click the play button to throw your temerind seed halves and check the score.
+                    now click on your ghuti you want to move.
+                    If you are not getting what to do next then turn on tutorial mode by clicking tutorial mode button.
+                    You are able to turn it off by clicking the same button again at the any point off the game.
+                    You can chat with your opponent by clicking chat button. 
+                    <br>
+                    <br>
+                    If you found any bugs or issues during game play you can mail me :
+                    <a onclick="window.open('mailto://subhajitmahata06@gmail.com');">subhajitmahata06@gmail.com</a> .I will try my best to fix that.
+                </p>
+                <br>
+                <br>
+                <br>
+                <a href="#english">If you don't know bengali click here to read the English version</a>
+                <h3 id="bengali">খেলার পদ্ধতি</h3>
+                <h3>কিভাবে খেলবেন ?</h3>
+                <p>আমরা এই খেলাকে চক অস্টা বলি । যদি আপনি খেলার নিয়মাবলী জানেন তাহলে খেলা উপভোগ করুন । এই খেলাটা অনেকটা
+                    লুডোর মতই । </p>
+                <h3 style="text-align: left;"> রাস্তা</h3>
+                লাল খেলোয়াড়ের রাস্তা নিচে দেখানো হল । বাকি খেলোয়াড়দের রাস্তাও একই ধরনের হবে । বাইরের পাকটা ঘড়ির
+                কাটার উল্টো দিক বরাবর ও ভিতরটা ঘড়ির কাটা বরাবর ঘুরতে হবে ।
+                <div class="image-resize"><img src="assets/playerpath.png" alt="path"></div>
+                <h3 style="text-align: left;"> দানে কত পড়লো কিভাবে জানবেন?</h3>
+                <p style="text-align: left;"> ১ টি সাদা আর অন্য তিনটি কলো হলে আপনার ১ পড়েছে।
+                    <br>২ টি সাদা আর দুটি কালো হলে ২ পড়েছে ।
+                    <br>৩ টি সাদা আর একটি কালো হলে ৩ পড়েছে ।
+                    <br>৪ টি সাদা হলে আপনার ৪ পড়েছে ।
+                    <br>আর সবগুলো কালো হলে ৮ পড়েছে ।
+                    <br> নিচে যথাক্রমে ১,২,৩,৪,৮ পড়ার ছবি দেওয়া হল :
+                </p>
+                <div class="image-resize"><img src="assets/one.PNG" alt="path"></div>
+                <div class="image-resize"><img src="assets/two.PNG" alt="path"></div>
+                <div class="image-resize"><img src="assets/three.PNG" alt="path"></div>
+                <div class="image-resize"><img src="assets/four.PNG" alt="path"></div>
+                <div class="image-resize"><img src="assets/eight.PNG" alt="path"></div>
+                <h3 style="text-align: left;"> Rules</h3>
+                <p style="text-align: left;">
+                    ১. লাল খেলোয়াড় থেকে খেলা শুরু হবে । <br>
+                    ২.প্রতি দানে খেলোয়াড় নির্বাচন করতে পারবেন কোন গুটি খেলবেন । দানে যত পড়বে ততগুলো ঘর আগের দেওয়া পথ
+                    বরাবর চলবে। গুটি চালানোর কোনো উপায় না থাকলে পরের খেলোয়াড় দান পাবে ।
+                    <br> ৩. যদি আপনার গুটি অন্য একটা খেলোয়াড়ের একটা গুটি আছে এমন ঘরে পৌঁছায় তাহলে আপনি ওর গুটি কাটতে
+                    পারবেন । তবে ওই ঘরটিকে সুরক্ষিত ঘর হওয়া চলবেনা । কাটা পাঁচটি ঘর হল সুরক্ষিত
+                    <br> ৪. ৪,৮ পড়লে অথবা অন্য খেলোয়াড় এর গুটি কাটলে আবার দান পাবেন ।
+                    <br> ৫.যার ৪ টা গুটি একদম মাঝের ঘরে আগে পৌঁছাবে সেই খেলার তিনি বিজয়ী বলে ঘোষিত হবেন।</p>
+                
+            </div>
+
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="mainpart">
+        <div id="canvaspart">
+            <div id="p1g1">1</div>
+            <div id="p1g2">2</div>
+            <div id="p1g3">3</div>
+            <div id="p1g4">4</div>
+            <div id="p2g1"></div>
+            <div id="p2g2"></div>
+            <div id="p2g3"></div>
+            <div id="p2g4"></div>
+            <div id="p3g1">1</div>
+            <div id="p3g2">2</div>
+            <div id="p3g3">3</div>
+            <div id="p3g4">4</div>
+            <div id="p4g1"></div>
+            <div id="p4g2"></div>
+            <div id="p4g3"></div>
+            <div id="p4g4"></div>
+            <canvas id="GameCanvas"></canvas>
+        </div>
+        <div id="menupart">
+            <div id="pgrbarcont">
+                <div id="prgcolor">
+                </div>
+            </div>
+            <button onclick="play()" id="playbutton">START </button>
+
+            <div id="dice1"></div>
+            <div id="dice2"></div>
+            <div id="dice3"></div>
+            <div id="dice0"></div>
+            <div id="animedice1"></div>
+            <div id="animedice2"></div>
+            <div id="animedice3"></div>
+            <div id="animedice0"></div>
+        </div>
+
+    </div>
+    <div id="footerdiv">
+        <a href="https://www.linkedin.com/in/subhajitmahata" style="text-decoration:none;color:gray;"
+            target="_blank">Linkedin</a>
+        &nbsp;<a href="https://www.facebook.com/subhajitkp007/" style="text-decoration:none;color:gray;"
+            target="_blank">Facebook</i></a>
+        &nbsp; <a href="https://www.instagram.com/subhajitkp007/" style="text-decoration:none;color:gray;"
+            target="_blank">Instagram</i></a>
+        <br> &copy;Subhajitkp007
+    </div>
+    <script src="socket.io/socket.io.js" type="text/javascript"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <script src="js/jquery.js" type="text/javascript"></script>
+    <script src="js/global.min.js" type="text/javascript"></script>
+    <script>socket = io();</script>
+    <script src="js/animation.min.js" type="text/javascript"></script>
+    <script src="js/ghuti.min.js" type="text/javascript"></script>
+    <script src="js/dice.min.js" type="text/javascript"></script>
+    <script src="js/eventlisten.min.js" type="text/javascript"></script>
+    <script src="js/canvas.min.js" type="text/javascript"></script>
+    <script src="js/board.min.js" type="text/javascript"></script>
+    <script src="js/gameplay.min.js" type="text/javascript"></script>
+    <script src="js/global2.min.js" type="text/javascript"></script>
+</body></html>
