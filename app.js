@@ -3,9 +3,9 @@ let app = express();
 let serv = require('http').Server(app);
  
 app.get('/',function(req, res) {
-    res.sendFile(__dirname + '/client/index.html');
+    res.sendFile(__dirname + '/index.html');
 });
-app.use('/client',express.static(__dirname + '/client'));
+app.use('/',express.static(__dirname + '/'));
  
 serv.listen(process.env.PORT || 2000);
 console.log("Server started.");
