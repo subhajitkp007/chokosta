@@ -10,11 +10,18 @@
             <span></span>
         </div>
         <ul>
-            <li><a onclick="window.open('https://linkedin.com/in/subhajitmahata');"> Endorse developer on Linkedin </a></li>
-            <li><a onclick="window.open('https://facebook.com/subhajitkp007');">Facebook</a></li>
-            <li><a onclick="window.open('https://api.whatsapp.com/send?phone=919732273358&text=*Hi%20Subhajit*%20I%20have%20played%20your%20game.&#128578;%20*My%20feedback*%20&source=&data=#'); ">WhatsApp Feedback</a></li>
+            <li><a href="javascript:newgamecreate()" >New Game</a></li>
+            <script>function newgamecreate(){
+                try{
+                    Android.showToast('https://chokosta.herokuapp.com/client/');
+                } catch(err){
+                    location.assign('https://chokosta.herokuapp.com/client/');
+                }
+                
+            }</script>
+            <li><a onclick="window.open('https://linkedin.com/in/subhajitmahata');">Visit Developer Linkedin Profile</a></li>
+            <li><a onclick="window.open('https://api.whatsapp.com/send?phone=919732273358&text=*Hi%20Subhajit*%20I%20have%20played%20your%20game.&#128578;%20*My%20feedback*%20&source=&data=#'); ">Share Feedback on whatsapp</a></li>
             <li><a onclick="window.open('mailto://subhajitmahata06@gmail.com');">Mail Bug</a></li>
-            <li><a onclick="window.open('http://subhajitmahatakp.epizy.com/cogame');">Practice Game</a></li>
         </ul>
     </div>
     <div id="helpbutton">
