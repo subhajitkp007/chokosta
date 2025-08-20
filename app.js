@@ -2,19 +2,29 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 
+// Load environment variables
+require('dotenv').config();
+
 const app = express();
 const server = http.Server(app);
 const io = socketIo(server, {});
 
 // Configuration
 const PORT = process.env.PORT || 2000;
-const CLIENT_ID_RANGE = { min: 1000, max: 10000 };
-const GAME_ID_RANGE = { min: 1000, max: 20000 };
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const CLIENT_ID_RANGE = { 
+    min: parseInt(process.env.CLIENT_ID_MIN || '1000'), 
+    max: parseInt(process.env.CLIENT_ID_MAX || '10000') 
+};
+const GAME_ID_RANGE = { 
+    min: parseInt(process.env.GAME_ID_MIN || '1000'), 
+    max: parseInt(process.env.GAME_ID_MAX || '20000') 
+};
+const GAME_UPDATE_INTERVAL = parseInt(process.env.GAME_UPDATE_INTERVAL || '20000');
 
 // In-memory storage (consider using Redis for production)
 const SOCKET_LIST = {}; // clients
 const games = {}; // game data
-const gameplayer = {};
 
 // Serve static files
 app.get('/', (req, res) => {
@@ -244,9 +254,9 @@ setInterval(() => {
             socket.emit('update', games);
         }
     });
-}, 20000);
+}, GAME_UPDATE_INTERVAL);
 
 // Start server
 server.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
+    console.log(`Server started on port ${PORT} in ${NODE_ENV} mode`);
 });
