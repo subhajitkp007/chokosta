@@ -7,13 +7,18 @@
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
   },
-  "engines": {
-    "node": "12.16.x"
+  "devDependencies": {
+    "eslint": "^8.57.1"
   },
-  "devDependencies": {},
+  "engines": {
+    "node": ">=12.16.0"
+  },
   "scripts": {
-    "start":"node app.js"
-     },
+    "start": "node app.js",
+    "dev": "node app.js",
+    "lint": "eslint app.js js/ui/*.js",
+    "lint:fix": "eslint app.js js/ui/*.js --fix"
+  },
   "author": "Subhajit Mahata <subhajitmahata06@gmail.com>",
   "license": "MIT"
 }
