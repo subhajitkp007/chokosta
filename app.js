@@ -1,190 +1,262 @@
-let express = require('express');
-let app = express();
-let serv = require('http').Server(app);
- 
-app.get('/',function(req, res) {
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+
+// Load environment variables
+require('dotenv').config();
+
+const app = express();
+const server = http.Server(app);
+const io = socketIo(server, {});
+
+// Configuration
+const PORT = process.env.PORT || 2000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const CLIENT_ID_RANGE = { 
+    min: parseInt(process.env.CLIENT_ID_MIN || '1000'), 
+    max: parseInt(process.env.CLIENT_ID_MAX || '10000') 
+};
+const GAME_ID_RANGE = { 
+    min: parseInt(process.env.GAME_ID_MIN || '1000'), 
+    max: parseInt(process.env.GAME_ID_MAX || '20000') 
+};
+const GAME_UPDATE_INTERVAL = parseInt(process.env.GAME_UPDATE_INTERVAL || '20000');
+
+// In-memory storage (consider using Redis for production)
+const SOCKET_LIST = {}; // clients
+const games = {}; // game data
+
+// Serve static files
+app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
-app.use('/',express.static(__dirname + '/'));
- 
-serv.listen(process.env.PORT || 2000);
-console.log("Server started.");
- 
-let SOCKET_LIST = {}; //clients
-let games={}; //game data
-let gameplayer={};
-let io = require('socket.io')(serv,{});
+app.use('/', express.static(__dirname + '/'));
 
-io.sockets.on('connection', function(socket){
-    for(let i=1000;i<10000;i+=1)
-    {
-        if(i in SOCKET_LIST)
-        continue;
-        else{
-            socket.id=i;
-            break;
+// Helper functions
+function generateUniqueId(min, max, existingIds) {
+    for (let i = min; i < max; i++) {
+        if (!(i in existingIds)) {
+            return i;
         }
     }
-    let randomnum=Math.random() * (10000 - 1000) + 1000;
-    socket.gid=Math.ceil(randomnum);
-    if(socket.gid in games)
-    for(let i=socket.gid;i<20000;i++)
-    {
-        if(i in games)
-        continue;
-        else{
-            socket.gid=i;
-            break;
+    throw new Error('No available IDs in range');
+}
+
+function generateRandomGameId() {
+    const randomNum = Math.random() * (GAME_ID_RANGE.max - GAME_ID_RANGE.min) + GAME_ID_RANGE.min;
+    return Math.ceil(randomNum);
+}
+
+function broadcastToGame(gameId, event, data) {
+    if (!games[gameId] || !games[gameId].clients) return;
+    
+    games[gameId].clients.forEach(clientId => {
+        if (SOCKET_LIST[clientId]) {
+            SOCKET_LIST[clientId].emit(event, data);
         }
+    });
+}
+
+function cleanupGame(gameId) {
+    if (games[gameId]) {
+        delete games[gameId];
     }
-    //store socket details
-    SOCKET_LIST[socket.id] = socket;
+}
 
-   // console.log('connectcted user =',socket.id,"game id",socket.gid);
-
-    socket.emit("start",{'cid':socket.id,'gid':socket.gid});
-    games[socket.gid]={};
-    games[socket.gid].clients=[];
-    
-    socket.on('create',function(data){
-        socket.gid=data.gid;
-       // console.log("gameid",socket.gid);
-        let gid=socket.gid;
-        if(games[gid])
-        {
-            games[gid].maxplayer=data.maxplayer;
-            games[gid].pos=data.pos;
-            games[gid].ghutipos=data.ghutipos;
-            games[gid].win=0;
-            games[gid].namecreator=data.name;
-            games[gid].clients=[];
-            games[gid].clients.push(data.cid);
-        }
-        else
-        {
-            socket.emit('gamedeleted',data.pl1name);
-        }
-       
+// Socket connection handling
+io.sockets.on('connection', (socket) => {
+    try {
+        // Generate unique client ID
+        socket.id = generateUniqueId(CLIENT_ID_RANGE.min, CLIENT_ID_RANGE.max, SOCKET_LIST);
         
-    });
-   
-    socket.on('join',function(data){
-        delete games[socket.gid];
-        let ac="not";
-        if(data.gid in games)
-        {
-            if(games[data.gid] && games[data.gid].clients)
-            if(games[data.gid].clients.length==1)
-            {
-                socket.gid=data.gid;
-                games[data.gid].clients.push(data.cid);
-                games[data.gid].namejoin=data.name;
-                for(let i in games[data.gid].clients)
-                    if(SOCKET_LIST[games[data.gid].clients[i]])
-                    SOCKET_LIST[games[data.gid].clients[i]].emit('newjoin',data.name);
-                //console.log(games[data.gid].clients);
-                let ac="";
-                if(games[data.gid])
-                for(let i in games[data.gid].clients)
-                    if(SOCKET_LIST[games[data.gid].clients[i]])
-                    SOCKET_LIST[games[data.gid].clients[i]].emit('startgame',{'pid':"1",'gid':data.gid,
-                    "pl1name":games[data.gid].namecreator,"pl3name":games[data.gid].namejoin});
-                
-            }
-            else{
-                socket.emit('fulljoined',"abcd");
-            }
-       // console.log("recieved game join request from",data.cid,ac,"accepted");
+        // Generate unique game ID
+        let gameId = generateRandomGameId();
+        if (gameId in games) {
+            gameId = generateUniqueId(gameId, GAME_ID_RANGE.max, games);
+        }
+        socket.gid = gameId;
+        
+        // Store socket details
+        SOCKET_LIST[socket.id] = socket;
+        
+        console.log(`User connected: ${socket.id}, Game ID: ${socket.gid}`);
+        
+        // Send initial data to client
+        socket.emit('start', { cid: socket.id, gid: socket.gid });
+        
+        // Initialize game data
+        games[socket.gid] = {
+            clients: []
+        };
+    } catch (error) {
+        console.error('Error during socket connection:', error);
+        socket.emit('error', { message: 'Connection failed' });
+    }
+    // Game creation handler
+    socket.on('create', (data) => {
+        try {
+            socket.gid = data.gid;
+            const gameId = socket.gid;
             
+            if (games[gameId]) {
+                games[gameId] = {
+                    ...games[gameId],
+                    maxplayer: data.maxplayer,
+                    pos: data.pos,
+                    ghutipos: data.ghutipos,
+                    win: 0,
+                    namecreator: data.name,
+                    clients: [data.cid]
+                };
+                console.log(`Game created: ${gameId} by ${data.name}`);
+            } else {
+                socket.emit('gamedeleted', data.pl1name);
+            }
+        } catch (error) {
+            console.error('Error creating game:', error);
+            socket.emit('error', { message: 'Failed to create game' });
+        }
+    });
+    // Game join handler
+    socket.on('join', (data) => {
+        try {
+            cleanupGame(socket.gid);
             
+            if (!(data.gid in games)) {
+                socket.emit('gamedeleted', data.pl1name);
+                return;
+            }
+            
+            const game = games[data.gid];
+            if (!game || !game.clients || game.clients.length !== 1) {
+                socket.emit('fulljoined', 'Game is full or not available');
+                return;
+            }
+            
+            // Join the game
+            socket.gid = data.gid;
+            game.clients.push(data.cid);
+            game.namejoin = data.name;
+            
+            // Notify existing players
+            broadcastToGame(data.gid, 'newjoin', data.name);
+            
+            // Start the game
+            const gameStartData = {
+                pid: '1',
+                gid: data.gid,
+                pl1name: game.namecreator,
+                pl3name: game.namejoin
+            };
+            broadcastToGame(data.gid, 'startgame', gameStartData);
+            
+            console.log(`Player ${data.name} joined game ${data.gid}`);
+        } catch (error) {
+            console.error('Error joining game:', error);
+            socket.emit('error', { message: 'Failed to join game' });
         }
-        else{
-            socket.emit('gamedeleted',data.pl1name);
+    });
+    // Move not done handler
+    socket.on('movenotdone', (data) => {
+        try {
+            if (games[data.gid]) {
+                broadcastToGame(data.gid, 'nextmove', data);
+            }
+        } catch (error) {
+            console.error('Error handling movenotdone:', error);
         }
-        //console.log("new join req from ",data.cid,"for ",socket.gid);
-        
     });
     
-    socket.on('movenotdone',function(data){
-       // console.log('move not changed');
-       //console.log('player ',data.ply,'recieved',data.boxes);
-        if(games[data.gid])
-        if(games[data.gid].clients)
-        for(let i in games[data.gid].clients)
-        if(SOCKET_LIST[games[data.gid].clients[i]])
-            SOCKET_LIST[games[data.gid].clients[i]].emit('nextmove',data);
-    });
-    socket.on('diceupdate',function(data){
-        let cid=0;
-        if(data.ply==1)
-        {
-            data.ply=3;
-            cid=1;
-        }
-        else
-        {
-            data.ply=1;
-            cid=0;
-        }
-        if(games[data.gid]){
-            if(games[data.gid].clients){
-                for(let i=0;i<games[data.gid].clients.length;i++)
-                if(SOCKET_LIST[games[data.gid].clients[i]])
-                SOCKET_LIST[games[data.gid].clients[cid]].emit('diceupdate',data);
+    // Dice update handler
+    socket.on('diceupdate', (data) => {
+        try {
+            const updatedData = { ...data };
+            let targetClientIndex = 0;
+            
+            if (data.ply === 1) {
+                updatedData.ply = 3;
+                targetClientIndex = 1;
+            } else {
+                updatedData.ply = 1;
+                targetClientIndex = 0;
             }
+            
+            const game = games[data.gid];
+            if (game && game.clients && game.clients[targetClientIndex]) {
+                const targetClient = SOCKET_LIST[game.clients[targetClientIndex]];
+                if (targetClient) {
+                    targetClient.emit('diceupdate', updatedData);
+                }
+            }
+        } catch (error) {
+            console.error('Error handling diceupdate:', error);
         }
-        
-        
     });
-    socket.on('movedone',function(data){
-      // console.log('player ',data.ply,'recieved',data.boxes);
-       let senddata={'ply':data.ply,'pos':data.pos,'g':data.g,'gid':data.gid,'boxes':data.boxes};
-        let cid=0;
-        if(data.ply==1)
-        {
-            senddata.ply=3;
-            cid=1;
+    
+    // Move done handler
+    socket.on('movedone', (data) => {
+        try {
+            const sendData = {
+                ply: data.ply === 1 ? 3 : 1,
+                pos: data.pos,
+                g: data.g,
+                gid: data.gid,
+                boxes: data.boxes
+            };
+            
+            broadcastToGame(data.gid, 'nextmove', sendData);
+        } catch (error) {
+            console.error('Error handling movedone:', error);
         }
-        else
-        {
-            senddata.ply=1;
-            cid=0;
+    });
+    
+    // Game completion handler
+    socket.on('complete', (data) => {
+        try {
+            if (games[data.gid]) {
+                broadcastToGame(data.gid, 'complete', data);
+                cleanupGame(data.gid);
+            }
+        } catch (error) {
+            console.error('Error handling game completion:', error);
         }
-       // console.log('cliets are',games[data.gid].clients);
-        if(games[senddata.gid])
-        for(let i in games[senddata.gid].clients)
-        if(SOCKET_LIST[games[senddata.gid].clients[i]])
-            SOCKET_LIST[games[senddata.gid].clients[i]].emit('nextmove',senddata);
     });
-    socket.on('complete',function(data){
-       // console.log('successfully a game completed');
-       if(games[data.gid])
-       for(let i in games[data.gid].clients)
-       if(SOCKET_LIST[games[data.gid].clients[i]])
-           SOCKET_LIST[games[data.gid].clients[i]].emit('complete',data);
-        delete games[data.id];
+    
+    // Chat message handler
+    socket.on('chatmsg', (data) => {
+        try {
+            if (games[data.gid]) {
+                broadcastToGame(data.gid, 'chatmsg', data);
+            }
+        } catch (error) {
+            console.error('Error handling chat message:', error);
+        }
     });
-    socket.on('chatmsg',function(data){
-        // console.log('move not changed');
-         if(games[data.gid])
-         if(games[data.gid].clients)
-         for(let i in games[data.gid].clients)
-         if(SOCKET_LIST[games[data.gid].clients[i]])
-             SOCKET_LIST[games[data.gid].clients[i]].emit('chatmsg',data);
-     });
-   //delete user  and game resolve memory issue
-   socket.on('disconnect',function(){
-   // console.log('disconnected',socket.id);
-    delete SOCKET_LIST[socket.id];
-   // console.log("deleteing game id",socket.gid);
-    if(socket.gid in games)
-    delete games[socket.gid];
+    // Socket disconnection handler
+    socket.on('disconnect', () => {
+        try {
+            console.log(`User disconnected: ${socket.id}`);
+            delete SOCKET_LIST[socket.id];
+            
+            if (socket.gid && games[socket.gid]) {
+                cleanupGame(socket.gid);
+            }
+        } catch (error) {
+            console.error('Error handling disconnect:', error);
+        }
     });
 });
- 
-setInterval(function(){
-    for(let i in SOCKET_LIST){
-        let socket = SOCKET_LIST[i];
-        socket.emit('update',games);
-    }
-},20000);
+
+// Periodic update to clients
+setInterval(() => {
+    Object.values(SOCKET_LIST).forEach(socket => {
+        if (socket && socket.emit) {
+            socket.emit('update', games);
+        }
+    });
+}, GAME_UPDATE_INTERVAL);
+
+// Start server
+server.listen(PORT, () => {
+    console.log(`Server started on port ${PORT} in ${NODE_ENV} mode`);
+});
